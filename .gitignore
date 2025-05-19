@@ -1,0 +1,16 @@
+# File NetBeans/IDE
+nbproject/private/
+nbproject/build-impl.xml
+build/
+dist/
+*.class
+*.jar
+*.log
+*.iml
+*.DS_Store
+
+# OS & Editor
+Thumbs.db
+.DS_Store
+.idea/
+*.swp
