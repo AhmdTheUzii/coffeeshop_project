@@ -1,0 +1,95 @@
+-- ============================================
+-- TABEL UTAMA SISTEM COFFEE SHOP
+-- ============================================
+
+-- Tabel Users
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('ADMIN', 'KASIR') NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabel Categories
+CREATE TABLE categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+-- Tabel Products
+CREATE TABLE products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    category_id INT NOT NULL,
+    price DOUBLE NOT NULL,
+    stock INT NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+);
+
+-- Tabel Orders
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    customer_name VARCHAR(100),
+    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    total_amount DOUBLE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- Tabel Order Items
+CREATE TABLE order_items (
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    subtotal DOUBLE NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+-- Tabel Activity Logs
+CREATE TABLE activity_logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    action TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- ============================================
+-- DATA AWAL UNTUK TESTING
+-- ============================================
+
+-- Users: ADMIN dan KASIR
+INSERT INTO users (username, password, role) VALUES
+('admin@gmail.com', 'admin123', 'ADMIN'),
+('kasir@gmail.com', 'kasir123', 'KASIR');
+
+-- Kategori Produk
+INSERT INTO categories (name) VALUES
+('Minuman'),
+('Makanan');
+
+-- Produk
+INSERT INTO products (name, category_id, price, stock) VALUES
+('Kopi Latte', 1, 25000, 100),
+('Espresso', 1, 20000, 80),
+('Roti Bakar', 2, 15000, 50);
+
+-- Contoh Pesanan
+INSERT INTO orders (user_id, customer_name, total_amount) VALUES
+(2, 'Budi', 70000),
+(2, 'Santi', 40000);
+
+-- Detail Item Pesanan
+INSERT INTO order_items (order_id, product_id, quantity, subtotal) VALUES
+(1, 1, 2, 50000),
+(1, 3, 1, 15000),
+(2, 2, 2, 40000);
+
+-- Log Aktivitas
+INSERT INTO activity_logs (user_id, action) VALUES
+(1, 'Menambahkan produk Kopi Latte'),
+(1, 'Menambahkan produk Roti Bakar'),
+(2, 'Melakukan transaksi untuk pelanggan Santi');
