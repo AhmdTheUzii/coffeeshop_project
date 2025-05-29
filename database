@@ -1,11 +1,8 @@
--- ============================================
--- TABEL UTAMA SISTEM COFFEE SHOP
--- ============================================
-
--- Tabel Users
-CREATE TABLE users (
+-- Tabel User (ganti dari users dan tambah kolom username)
+CREATE TABLE user (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('ADMIN', 'KASIR') NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -34,7 +31,7 @@ CREATE TABLE orders (
     customer_name VARCHAR(100),
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     total_amount DOUBLE NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 -- Tabel Order Items
@@ -54,17 +51,17 @@ CREATE TABLE activity_logs (
     user_id INT NOT NULL,
     action TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 -- ============================================
 -- DATA AWAL UNTUK TESTING
 -- ============================================
 
--- Users: ADMIN dan KASIR
-INSERT INTO users (username, password, role) VALUES
-('admin@gmail.com', 'admin123', 'ADMIN'),
-('kasir@gmail.com', 'kasir123', 'KASIR');
+-- User: ADMIN dan KASIR (login pakai email dan username)
+INSERT INTO user (username, email, password, role) VALUES
+('adminuser', 'admin@gmail.com', 'admin123', 'ADMIN'),
+('kasiruser', 'kasir@gmail.com', 'kasir123', 'KASIR');
 
 -- Kategori Produk
 INSERT INTO categories (name) VALUES
