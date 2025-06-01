@@ -53,8 +53,8 @@ public class ManageProduk extends javax.swing.JFrame {
         
         while (rs.next()) {
             Object[] row = {
-                rs.getString("id_produk"),
-                rs.getString("nama_produk"),
+                rs.getString("id"),
+                rs.getString("nama"),
                 rs.getString("kondisi"),
                 rs.getDouble("harga"),
                 rs.getInt("stok")
@@ -63,37 +63,22 @@ public class ManageProduk extends javax.swing.JFrame {
         }
         
     } catch (SQLException e) {
-        System.out.println("Database error: " + e.getMessage());
-        loadDummyData();
+    System.out.println("Database error: " + e.getMessage());
+    JOptionPane.showMessageDialog(this, "Gagal memuat data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     } finally {
         closeResources(rs, pst, conn);
     }
 }
-private void loadDummyData() {
-    DefaultTableModel model = (DefaultTableModel) loadTable.getModel();
-    model.setRowCount(0);
-    
-    Object[][] dummyData = {
-        {"P001", "Nasi Goreng", "Baik", 15000.0, 10},
-        {"P002", "Es Teh", "Baik", 5000.0, 20},
-        {"P003", "Ayam Bakar", "Busuk", 25000.0, 0}
-    };
-    
-    for (Object[] row : dummyData) {
-        model.addRow(row);
-    }
-}
-
-    private void clearFields() {
+   
+  private void clearFields() {
     idMakan.setText("");
     txtNamaMinum.setText("");
-    Kondisi.setSelectedIndex(0);
+    Kondisi.setSelectedIndex(0); // Akan select "Baik"
     HargaMakanan.setText("");
     Stok.setText("");
     idMakan.requestFocus();
-    
-    
 }
+  
     private void refreshTable() {
     javax.swing.SwingUtilities.invokeLater(() -> {
         try {
@@ -142,7 +127,7 @@ private void loadDummyData() {
 
         jLabel4.setText("Nama Minum/Makan    :");
 
-        Kondisi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Busuk", "Baik" }));
+        Kondisi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Baik", "Rusak" }));
 
         jLabel6.setText("Kondisi            :");
 
@@ -168,10 +153,10 @@ private void loadDummyData() {
             }
         });
         loadTable.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
                 loadTableInputMethodTextChanged(evt);
-            }
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         jScrollPane2.setViewportView(loadTable);
@@ -335,12 +320,12 @@ private void loadDummyData() {
     int confirm = JOptionPane.showConfirmDialog(this, "Yakin ingin menghapus data ini?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
     if (confirm == JOptionPane.YES_OPTION) {
         try {
-            String id_produk = loadTable.getValueAt(selectedRow, 0).toString();
+            String id = loadTable.getValueAt(selectedRow, 0).toString();
             
             Connection conn = Koneksi.getConnection();
-            String query = "DELETE FROM produk WHERE id_produk=?";
+            String query = "DELETE FROM produk WHERE id=?";
             PreparedStatement pst = conn.prepareStatement(query);
-            pst.setString(1, id_produk);
+            pst.setString(1, id);
             
             pst.executeUpdate();
             pst.close();
@@ -368,20 +353,21 @@ private void loadDummyData() {
     }
     
     try {
-        String id_produk = idMakan.getText().trim();
+        String id = idMakan.getText().trim();
         String nama = txtNamaMinum.getText().trim();
         String kondisi = Kondisi.getSelectedItem().toString();
         double harga = Double.parseDouble(HargaMakanan.getText().trim());
         int stok = Integer.parseInt(Stok.getText().trim());
         
         Connection conn = Koneksi.getConnection();
-        String query = "UPDATE produk SET nama_produk=?, kondisi=?, harga=?, stok=? WHERE id_produk=?";
+        // PERBAIKAN: Query yang benar (hapus "=?" yang berlebihan)
+        String query = "UPDATE produk SET nama=?, kondisi=?, harga=?, stok=? WHERE id=?";
         PreparedStatement pst = conn.prepareStatement(query);
         pst.setString(1, nama);
         pst.setString(2, kondisi);
         pst.setDouble(3, harga);
         pst.setInt(4, stok);
-        pst.setString(5, id_produk);
+        pst.setString(5, id);
         
         pst.executeUpdate();
         pst.close();
@@ -389,7 +375,7 @@ private void loadDummyData() {
         
         JOptionPane.showMessageDialog(this, "Data berhasil diupdate!");
         clearFields();
-        refreshTable(); // Ganti ini
+        refreshTable();
         
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, "Harga dan Stok harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -410,16 +396,16 @@ private void loadDummyData() {
             return;
         }
         
-        String id_produk = idMakan.getText().trim();
+        String id = idMakan.getText().trim();
         String nama = txtNamaMinum.getText().trim();
         String kondisi = Kondisi.getSelectedItem().toString();
         double harga = Double.parseDouble(HargaMakanan.getText().trim());
         int stok = Integer.parseInt(Stok.getText().trim());
         
         Connection conn = Koneksi.getConnection();
-        String query = "INSERT INTO produk (id_produk, nama_produk, kondisi, harga, stok) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO produk (id, nama, kondisi, harga, stok ) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement pst = conn.prepareStatement(query);
-        pst.setString(1, id_produk);
+        pst.setString(1, id);
         pst.setString(2, nama);
         pst.setString(3, kondisi);
         pst.setDouble(4, harga);
