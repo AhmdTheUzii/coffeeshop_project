@@ -42,6 +42,10 @@ Aplikasi kasir berbasis desktop untuk mengelola operasional coffee shop, dibangu
 
 ## 📸 Screenshot (opsional)
 ![image](https://github.com/user-attachments/assets/c7e81289-0ec2-4eeb-aab0-0c5fb89a7ada)
+![image](https://github.com/user-attachments/assets/f5aeb4e9-acbb-400b-9e82-b04ea4ebe63d)
+![image](https://github.com/user-attachments/assets/059215f6-a4d3-48f8-abc6-0279dff31ebf)
+![image](https://github.com/user-attachments/assets/252c282d-bea4-463c-acc4-7b31e83d0614)
+
 
 
 ## 📄 Lisensi
